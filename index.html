@@ -1,115 +1,183 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Tôi là Tuất</title>
+<title>Pomodoro Timer</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#121212;
+background:#0f0f0f;
 color:white;
+font-family: "Segoe UI", Arial, sans-serif;
 text-align:center;
-padding-top:100px;
+margin-top:80px;
 }
 
-h1{
-font-size:40px;
+a{
+color:#4da6ff;
+font-size:18px;
 }
 
 #timer{
-font-size:60px;
-margin:20px;
+font-size:90px;
+margin:40px 0;
+letter-spacing:3px;
 }
 
 button{
-padding:10px 20px;
+padding:12px 25px;
 margin:10px;
 font-size:16px;
-cursor:pointer;
 border:none;
-border-radius:5px;
+border-radius:8px;
+background:#4da6ff;
+color:white;
+cursor:pointer;
+transition:0.3s;
 }
 
-.start{background:#4CAF50;color:white;}
-.pause{background:#ff9800;color:white;}
-.reset{background:#f44336;color:white;}
+button:hover{
+background:#1f7ae0;
+transform:scale(1.05);
+}
+
+#breakScreen{
+margin-top:40px;
+}
+
+img{
+margin:20px 0;
+}
 
 </style>
+
 </head>
 
 <body>
 
-<h1>Pô mô đô rô ⏱</h1>
+<p>
+<a href="gioithieu.html" style="text-decoration:underline">
+Giới thiệu cách học Pomodoro
+</a>
+</p>
 
-<div id="timer">25:00</div>
+<h1 id="timer">25:00</h1>
 
-<p>Học 25 phút - Nghỉ 36 phút</p>
+<div id="buttons">
 
-<button class="start" onclick="startTimer()">Sờ tát</button>
-<button class="pause" onclick="pauseTimer()">Sì tóp</button>
-<button class="reset" onclick="resetTimer()">SGPause</button>
+<button onclick="startTimer()">Start</button>
 
-<p>Số lần tích đức: <span id="sessions">0</span></p>
+<button onclick="resetTimer()">Reset</button>
+
+<button onclick="skipTimer()">Skip</button>
+
+</div>
+
+<div id="breakScreen" style="display:none">
+
+<h2>Break Time</h2>
+
+<img src="celebrate.png" width="200">
+
+<h2 id="breakTimer">10</h2>
+
+<button onclick="skipBreak()">Skip quãng nghỉ</button>
+
+</div>
 
 <script>
 
-let time = 1500;
-let timer = null;
-let sessions = 0;
+let time = 1500
+let timerInterval
 
-function updateDisplay(){
-let minutes = Math.floor(time / 60);
-let seconds = time % 60;
+function updateTimer(){
+
+let minutes = Math.floor(time/60)
+let seconds = time % 60
+
+if(seconds < 10){
+seconds = "0"+seconds
+}
 
 document.getElementById("timer").innerText =
-String(minutes).padStart(2,"0") + ":" + String(seconds).padStart(2,"0");
+minutes + ":" + seconds
+
 }
 
 function startTimer(){
 
-if(timer !== null) return;
+timerInterval = setInterval(function(){
 
-timer = setInterval(function(){
+time--
 
-time--;
+updateTimer()
 
 if(time <= 0){
 
-clearInterval(timer);
-timer = null;
-
-sessions++;
-document.getElementById("sessions").innerText = sessions;
-
-alert("Focus session complete! Take a 5 minute break.");
-
-time = 300;
+clearInterval(timerInterval)
+startBreak()
 
 }
 
-updateDisplay();
-
-},1000);
-
-}
-
-function pauseTimer(){
-
-clearInterval(timer);
-timer = null;
+},1000)
 
 }
 
 function resetTimer(){
 
-clearInterval(timer);
-timer = null;
+clearInterval(timerInterval)
 
-time = 1500;
-updateDisplay();
+time = 1500
+
+updateTimer()
+
+document.getElementById("breakScreen").style.display="none"
+document.getElementById("buttons").style.display="block"
+document.getElementById("timer").style.display="block"
 
 }
+
+function skipTimer(){
+
+clearInterval(timerInterval)
+startBreak()
+
+}
+
+function startBreak(){
+
+document.getElementById("buttons").style.display="none"
+document.getElementById("timer").style.display="none"
+
+document.getElementById("breakScreen").style.display="block"
+
+let breakTime = 10
+
+let breakInterval = setInterval(function(){
+
+breakTime--
+
+document.getElementById("breakTimer").innerText = breakTime
+
+if(breakTime <= 0){
+
+clearInterval(breakInterval)
+resetTimer()
+
+}
+
+},1000)
+
+}
+
+function skipBreak(){
+
+resetTimer()
+
+}
+
+updateTimer()
 
 </script>
 
